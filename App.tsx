@@ -1,18 +1,28 @@
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ScrollView,
+} from "react-native";
 
 export default function App() {
   const [enteredGoalText, setEnteredGoalText] = useState<string>("");
   const [courseGoal, setCourseGoal] = useState<string[]>([]);
-  function goalInputHandler(enteredText: any) {
+  
+  function goalInputHandler(enteredText: string) {
     setEnteredGoalText(enteredText);
   }
 
   function addGoalHandler() {
+    if (enteredGoalText.trim().length === 0) return; // Validasi input kosong
     setCourseGoal((currentCourseGoal) => [
       ...currentCourseGoal,
-      enteredGoalText,
+      enteredGoalText.trim(),
     ]);
+    setEnteredGoalText("");
   }
 
   return (
@@ -21,14 +31,19 @@ export default function App() {
         <TextInput
           style={styles.textInput}
           placeholder="Your goal!"
+          value={enteredGoalText}
           onChangeText={goalInputHandler}
         />
         <Button onPress={addGoalHandler} title="Add Goal" />
       </View>
       <View style={styles.goalsContainer}>
-        {courseGoal.map((goal, index) => (
-          <Text key={index}>{goal}</Text>
-        ))}
+        <ScrollView>
+          {courseGoal.map((goal, index) => (
+            <View style={styles.goalItem} key={index}>
+              <Text style={styles.goalText}>{goal}</Text>
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -58,5 +73,14 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     flex: 5,
+  },
+  goalItem: {
+    margin: 8,
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: "#5e0acc",
+  },
+  goalText: {
+    color: "white",
   },
 });
